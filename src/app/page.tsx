@@ -1,102 +1,104 @@
-import Image from "next/image";
+"use client"; // ✅ Needed because we are using useSession & useRouter
+
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import AuthButton from "@/components/AuthButton";
+
+const features = [
+  {
+    title: "Github OAuth",
+    description:
+      "Connect easily and securely with your GitHub account using OAuth for seamless access to your developer analytics.",
+    icon: "githubAuth.jpg",
+  },
+  {
+    title: "Commit Insights",
+    description:
+      "Receive tailored recommendations to enhance your productivity and code quality based on your unique coding patterns.",
+    icon: "insights.jpg",
+  },
+  {
+    title: "Gamified Experience",
+    description:
+      "Boost your coding motivation with our gamified experience, turning your development journey into an engaging adventure.",
+    icon: "gamified.jpg",
+  },
+];
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  //  Redirect authenticated users to /dashboard
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
+
+  return (
+    <div className="h-screen bg-gray-50">
+      <header className="flex items-center justify-between p-4 bg-white shadow-sm">
+        <img src="git.png" alt="" className="h-17" />
+        <AuthButton />
+      </header>
+      <main className="flex flex-col items-center justify-center text-center px-4 py-20 bg-gray-50">
+        <div className="mt-8 max-w-2xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
+            Welcome to GitGazer
+          </h1>
+          <p className="mt-3 text-lg text-gray-600">
+            Developer Analytics Reimagined
+          </p>
+          <button className="mt-6 bg-black text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-700 transition">
+            Get Started
+          </button>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Features */}
+      <section className="bg-white">
+        <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+          <div className="lg:text-center">
+            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              What GitGazer Offers
+            </p>
+            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+              Explore the powerful features designed to enhance your coding
+              experience.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature) => (
+              <div
+                key={feature.title}
+                className="relative bg-gray-900 text-white p-6 rounded-xl shadow-lg border border-gray-700 hover:shadow-indigo-500/30 hover:border-indigo-400 transition"
+              >
+                <div className="flex items-center justify-center w-12 h-12 bg-gray-800 rounded-lg border border-gray-600">
+                  <img
+                    src={feature.icon}
+                    alt={feature.title}
+                    className="w-6 h-6 object-contain"
+                  />
+                </div>
+
+                <h3 className="mt-6 text-lg font-bold">{feature.title}</h3>
+                <p className="mt-2 text-sm text-gray-300">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer>
+        <div className="bg-gray-900 text-white py-6 text-center">
+          <p>&copy; 2024 GitGazer. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
