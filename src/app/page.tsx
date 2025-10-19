@@ -28,6 +28,9 @@ const features = [
 
 export default function Home() {
   const { data: session, status } = useSession();
+
+  console.log("GitHub Token:", session?.accessToken);
+
   const router = useRouter();
 
   //  Redirect authenticated users to /dashboard

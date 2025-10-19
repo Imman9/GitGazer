@@ -1,80 +1,110 @@
-// src/app/dashboard/page.tsx
-import CommitTimeline from "@/components/charts/CommitTimeline";
-import DevQuestPanel from "@/components/fun/DevQuestPanel";
+// // "use client";
 
-export default async function DashboardPage() {
+// import { signOut, useSession } from "next-auth/react";
+
+// export default function Dashboard() {
+//   const { data: session } = useSession();
+
+//   return (
+//     <div className="flex h-screen bg-gray-100">
+//       {/* Sidebar */}
+//       <aside className="w-64 bg-gray-900 text-white flex flex-col p-4">
+//         <h2 className="text-xl font-bold mb-6">GitGazer</h2>
+
+//         <nav className="flex flex-col gap-3">
+//           <a href="#" className="hover:bg-gray-700 p-2 rounded">Overview</a>
+//           <a href="#" className="hover:bg-gray-700 p-2 rounded">Commits</a>
+//           <a href="#" className="hover:bg-gray-700 p-2 rounded">Insights</a>
+//           <a href="#" className="hover:bg-gray-700 p-2 rounded">Settings</a>
+//         </nav>
+
+//         <button
+//           onClick={() => signOut({ callbackUrl: "/" })}
+//           className="mt-auto bg-red-500 hover:bg-red-600 p-2 rounded"
+//         >
+//           Logout
+//         </button>
+//       </aside>
+
+//       {/* Main Content */}
+//       <div className="flex-1 flex flex-col">
+//         {/* Header */}
+//         <header className="bg-white shadow p-4 flex justify-between items-center">
+//           <h1 className="text-2xl font-semibold">Dashboard</h1>
+//           <div className="flex items-center gap-3">
+//             <img
+//               src={session?.user?.image || "/default-avatar.png"}
+//               alt="Avatar"
+//               className="w-8 h-8 rounded-full"
+//             />
+//             <span>{session?.user?.name || "User"}</span>
+//           </div>
+//         </header>
+
+//         {/* Widget Grid */}
+//         <main className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//           <div className="bg-white shadow rounded-lg p-4">Commit Activity</div>
+//           <div className="bg-white shadow rounded-lg p-4">Repositories</div>
+//           <div className="bg-white shadow rounded-lg p-4">Streaks</div>
+//           <div className="bg-white shadow rounded-lg p-4">Top Languages</div>
+//           <div className="bg-white shadow rounded-lg p-4">Recent PRs</div>
+//           <div className="bg-white shadow rounded-lg p-4">Badges</div>
+//         </main>
+//       </div>
+//     </div>
+//   );
+// }
+"use client";
+
+import { useState } from "react";
+import { FiMenu } from "react-icons/fi";
+import { useSession } from "next-auth/react";
+
+import { ReactNode } from "react";
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const { data: session } = useSession();
+  console.log("User Session:", session);
+
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <div className="space-y-8">
-      {/* Top Section */}
-      <div className="grid grid-cols-3 gap-6">
-        {/* Profile Card */}
-        <div className="col-span-1 bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-lg">
-          <div className="flex flex-col items-center text-center">
-            {/* Avatar */}
-            <div className="w-20 h-20 rounded-full bg-gray-700 mb-3 flex items-center justify-center text-2xl">
-              🧑‍💻
-            </div>
-            <h2 className="text-xl font-bold text-white">demo</h2>
-            <p className="text-gray-400 text-sm">Level 3 • 1200 XP</p>
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div
+        className={`bg-gray-900 text-white transition-all duration-300 ${
+          collapsed ? "w-16" : "w-64"
+        }`}
+      >
+        <button className="p-4" onClick={() => setCollapsed(!collapsed)}>
+          <FiMenu className="text-xl" />
+        </button>
 
-            {/* XP Bar */}
-            <div className="w-full bg-gray-700 h-2 rounded-full mt-4">
-              <div
-                className="bg-green-500 h-2 rounded-full"
-                style={{ width: "60%" }}
-              />
-            </div>
-            <p className="text-xs text-gray-400 mt-1">
-              Next level: 800 XP left
-            </p>
-
-            {/* Streak Info */}
-            <div className="flex justify-around w-full mt-4 text-sm text-gray-300">
-              <div>
-                🔥 Current Streak <br />{" "}
-                <span className="font-bold text-white">5 days</span>
-              </div>
-              <div>
-                🏆 Longest <br />{" "}
-                <span className="font-bold text-white">12 days</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Commit Timeline */}
-        <div className="col-span-2 bg-gray-800 p-6 rounded-2xl shadow-lg">
-          <h2 className="text-lg font-semibold mb-4">📈 Commit Timeline</h2>
-          <CommitTimeline />
-        </div>
+        {!collapsed && (
+          <nav className="mt-4 space-y-2">
+            <a href="/dashboard" className="block px-4 py-2 hover:bg-gray-700">
+              Dashboard
+            </a>
+            <a href="/repos" className="block px-4 py-2 hover:bg-gray-700">
+              Repositories
+            </a>
+            <a href="/profile" className="block px-4 py-2 hover:bg-gray-700">
+              Profile
+            </a>
+          </nav>
+        )}
       </div>
 
-      {/* Bottom Section */}
-      <div className="grid grid-cols-3 gap-6">
-        {/* Badges */}
-        <div className="bg-gray-800 p-6 rounded-2xl shadow-lg">
-          <h3 className="font-semibold mb-4">🏅 Badges</h3>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-gray-700 p-3 rounded-lg flex flex-col items-center">
-              <span className="text-2xl">🪄</span>
-              <p className="text-xs text-gray-300 mt-1">Commit Wizard</p>
-            </div>
-            <div className="bg-gray-700 p-3 rounded-lg flex flex-col items-center">
-              <span className="text-2xl">⚡</span>
-              <p className="text-xs text-gray-300 mt-1">Pushaholic</p>
-            </div>
-            <div className="bg-gray-700 p-3 rounded-lg flex flex-col items-center">
-              <span className="text-2xl">🦜</span>
-              <p className="text-xs text-gray-300 mt-1">Polyglot</p>
-            </div>
-          </div>
-        </div>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="bg-white shadow p-4 flex justify-between">
+          <h1 className="text-xl font-semibold">Dashboard</h1>
+          <p>User Avatar / Logout Button</p>
+        </header>
 
-        {/* Quests */}
-        <div className="col-span-2 bg-gray-800 p-6 rounded-2xl shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">🗺️ DevQuests</h3>
-          <DevQuestPanel />
-        </div>
+        {/* Content */}
+        <main className="p-4 overflow-auto">{children}</main>
       </div>
     </div>
   );
