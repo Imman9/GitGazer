@@ -12,6 +12,7 @@ declare module "next-auth" {
 export const handler = NextAuth({
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -25,17 +26,25 @@ export const handler = NextAuth({
   ],
 
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, user }) {
       console.log("JWT ACCOUNT:", account);
       // Initial sign in
       if (account) {
         token.accessToken = account.access_token;
       }
+      if (user) {
+        token.user = user;
+      }
       return token;
     },
     async session({ session, token }) {
-      // Optionally attach access token
-      session.accessToken = token.accessToken as string;
+      // Add token data to session
+      if (token.accessToken) {
+        session.accessToken = token.accessToken as string;
+      }
+      if (token.user) {
+        session.user = token.user as any;
+      }
       return session;
     },
   },
